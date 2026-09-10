@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Galeria de imagens — demonstração local</title>
+    <link rel="stylesheet" href="../dist/image-loader.css">
+    <style>
+        :root { font-family: system-ui, sans-serif; color-scheme: light; }
+        body { margin: 0; background: #f4f6f8; color: #172033; }
+        main { max-width: 64rem; margin: auto; padding: 24px; }
+        h1 { font-size: 1.5rem; margin-bottom: 8px; }
+        p { line-height: 1.5; }
+        form { display: grid; gap: 16px; }
+        form > button { justify-self: start; min-height: 44px; padding: 8px 16px; }
+        pre { overflow: auto; padding: 16px; background: #172033; color: #e8edf5; border-radius: 8px; }
+    </style>
+</head>
+<body>
+<main>
+    <h1>Imagens do produto</h1>
+    <p>Selecione imagens pela câmera, arraste para ordenar e use os ícones para editar.</p>
+    <p>Demonstração local: exclusão simulada, sem servidor ou autenticação. Antes de abrir, execute <code>npm run build</code> na pasta do pacote.</p>
+    <form data-example-form>
+        <div data-example-image-loader></div>
+        <button type="submit">Preparar formulário</button>
+        <p data-example-status role="status" aria-live="polite">Carregando a biblioteca compilada…</p>
+        <pre data-example-output>Nenhum envio preparado.</pre>
+    </form>
+</main>
+<script src="../dist/image-loader.global.js"></script>
+<script>
+    (() => {
+        const status = document.querySelector('[data-example-status]');
+        const form = document.querySelector('[data-example-form]');
+        if (!window.ImageLoaderLibrary) {
+            status.textContent = 'Build não encontrado. Execute npm run build na raiz do repositório e reabra este arquivo.';
+            form.addEventListener('submit', event => event.preventDefault());
+            return;
+        }
+        const { ImageLoader, NativeFormAdapter } = window.ImageLoaderLibrary;
+        const preview = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="300" height="300" fill="#d9e5f4"/><circle cx="150" cy="150" r="100" fill="#3d6b9a"/><text x="150" y="162" text-anchor="middle" font-family="system-ui" font-size="30" fill="white">Salva</text></svg>');
+        const loader = new ImageLoader(document.querySelector('[data-example-image-loader]'), {
+            locale: 'pt-BR', maxFiles: 6,
+            images: [{ id: 1, url: preview, altText: 'Imagem salva de demonstração', position: 0, primary: true }],
+            deletePersistedImage: async () => { await new Promise(resolve => setTimeout(resolve, 200)); },
+        });
+        const adapter = new NativeFormAdapter(form, loader);
+        status.textContent = 'Pronto. Nenhuma alteração será enviada a um servidor.';
+        form.addEventListener('image-loader:submit-error', ({ detail }) => { status.textContent = detail.error.message; });
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            const data = new FormData(form);
+            const manifest = JSON.parse(data.get('media_manifest') || '[]');
+            const files = [...data.entries()].filter(([, value]) => value instanceof File)
+                .map(([field, value]) => ({ field, name: value.name, type: value.type, size: value.size }));
+            document.querySelector('[data-example-output]').textContent = JSON.stringify({ manifest, files }, null, 2);
+            status.textContent = 'Formulário nativo preparado abaixo; nenhum envio realizado.';
+        });
+        window.imageLoaderDemo = { loader, adapter };
+        window.addEventListener('pagehide', () => { adapter.destroy(); loader.destroy(); }, { once: true });
+    })();
+</script>
+</body>
+</html>

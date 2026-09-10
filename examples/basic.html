@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Image Loader standalone example</title>
+    <style>
+        :root { color-scheme: light; font-family: system-ui, sans-serif; }
+        body { margin: 0; background: #f4f6f8; color: #172033; }
+        main { box-sizing: border-box; max-width: 72rem; margin: 0 auto; padding: 1.5rem; }
+        form { display: grid; gap: 1rem; }
+        label { display: grid; gap: .375rem; max-width: 28rem; font-weight: 600; }
+        input:not([type="file"]) { border: 1px solid #aab4c4; border-radius: .375rem; padding: .625rem; font: inherit; }
+        [data-example-status] { min-height: 1.5rem; margin: 0; }
+        [data-example-output] { overflow: auto; padding: 1rem; border-radius: .5rem; background: #172033; color: #e8edf5; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Standalone image gallery</h1>
+        <p>This form starts with one persisted image. Add local files, reorder them, and submit the native form.</p>
+        <form data-example-form action="/examples/basic.html" method="post">
+            <label>
+                Product name
+                <input name="name" value="Coffee grinder">
+            </label>
+            <div data-example-image-loader></div>
+            <button type="submit">Save example</button>
+            <p data-example-status role="status" aria-live="polite"></p>
+            <pre data-example-output>No submission yet.</pre>
+        </form>
+    </main>
+
+    <script type="module">
+        import { ImageLoader, NativeFormAdapter } from '../src/index.js';
+        import '../src/styles/image-loader.css';
+
+        const persistedPreview = `data:image/svg+xml,${encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 640 400">
+                <rect width="640" height="400" fill="#d9e5f4"/>
+                <circle cx="320" cy="200" r="125" fill="#3d6b9a"/>
+                <text x="320" y="215" text-anchor="middle" font-family="system-ui" font-size="42" fill="white">Saved</text>
+            </svg>
+        `)}`;
+        const form = document.querySelector('[data-example-form]');
+        const status = document.querySelector('[data-example-status]');
+        const output = document.querySelector('[data-example-output]');
+        const loader = new ImageLoader(document.querySelector('[data-example-image-loader]'), {
+            locale: 'en',
+            maxFiles: 6,
+            images: [{
+                id: 1,
+                url: persistedPreview,
+                altText: 'Persisted coffee grinder image',
+                position: 0,
+                primary: true,
+            }],
+            deletePersistedImage: async () => {
+                await new Promise((resolve) => setTimeout(resolve, 200));
+            },
+        });
+        const adapter = new NativeFormAdapter(form, loader);
+
+        form.addEventListener('image-loader:submit-error', ({ detail }) => {
+            status.textContent = detail.error.message;
+        });
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const data = new FormData(form);
+            const manifest = JSON.parse(data.get('media_manifest') ?? '[]');
+            const files = [...data.entries()]
+                .filter(([name, value]) => name.startsWith('media_files[') && value instanceof File)
+                .map(([name, value]) => ({ field: name, name: value.name, type: value.type, size: value.size }));
+            output.textContent = JSON.stringify({
+                manifest,
+                files,
+            }, null, 2);
+            status.textContent = 'Native form data prepared below.';
+        });
+        window.imageLoaderDemo = { loader, adapter };
+        window.addEventListener('pagehide', () => {
+            adapter.destroy();
+            loader.destroy();
+        }, { once: true });
+    </script>
+</body>
+</html>

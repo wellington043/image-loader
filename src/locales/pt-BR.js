@@ -1,0 +1,45 @@
+export const ptBR = {
+    addImages: 'Adicionar imagens',
+    chooseFiles: 'Selecionar imagens',
+    dropzone: 'Solte imagens aqui ou selecione arquivos.',
+    empty: 'Adicione a primeira imagem para começar a galeria.',
+    count: '{count} de {maxFiles} imagens',
+    image: 'Imagem',
+    errors: {
+        duplicateFile: 'Este arquivo já foi selecionado.',
+        invalidType: 'Este tipo de arquivo não é suportado.',
+        sourceTooLarge: 'Este arquivo é muito grande.',
+        maxFiles: 'O limite de imagens foi atingido.',
+        unknown: 'Esta imagem não pôde ser adicionada.',
+    },
+    actions: {
+        setPrimary: 'Definir como principal',
+        rotateLeft: 'Girar para a esquerda',
+        rotateRight: 'Girar para a direita',
+        moveLeft: 'Mover para a esquerda',
+        moveRight: 'Mover para a direita',
+        remove: 'Excluir imagem',
+        reorder: 'Reordenar imagem',
+        editDetails: 'Editar detalhes',
+    },
+    fields: {
+        altText: 'Texto alternativo',
+        altTextHint: 'Descreva a imagem para pessoas que não podem vê-la.',
+    },
+    status: {
+        primary: 'Principal',
+        local: 'Nova',
+        processing: 'Processando',
+        deleting: 'Excluindo',
+        error: 'Erro',
+    },
+    messages: {
+        imageMoved: 'Imagem movida para a posição {position}.',
+    },
+    dialog: {
+        title: 'Excluir imagem?',
+        description: 'Esta imagem já salva será excluída imediatamente.',
+        cancel: 'Cancelar',
+        confirm: 'Excluir imagem',
+    },
+};

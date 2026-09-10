@@ -1,0 +1,45 @@
+export const en = {
+    addImages: 'Add images',
+    chooseFiles: 'Choose files',
+    dropzone: 'Drop images here or choose files.',
+    empty: 'Add your first image to start the gallery.',
+    count: '{count} of {maxFiles} images',
+    image: 'Image',
+    errors: {
+        duplicateFile: 'This file has already been selected.',
+        invalidType: 'This file type is not supported.',
+        sourceTooLarge: 'This file is too large.',
+        maxFiles: 'The image limit has been reached.',
+        unknown: 'This image could not be added.',
+    },
+    actions: {
+        setPrimary: 'Set as primary',
+        rotateLeft: 'Rotate left',
+        rotateRight: 'Rotate right',
+        moveLeft: 'Move left',
+        moveRight: 'Move right',
+        remove: 'Remove image',
+        reorder: 'Reorder image',
+        editDetails: 'Edit details',
+    },
+    fields: {
+        altText: 'Alternative text',
+        altTextHint: 'Describe the image for people who cannot see it.',
+    },
+    status: {
+        primary: 'Primary',
+        local: 'New',
+        processing: 'Processing',
+        deleting: 'Deleting',
+        error: 'Error',
+    },
+    messages: {
+        imageMoved: 'Image moved to position {position}.',
+    },
+    dialog: {
+        title: 'Remove image?',
+        description: 'This persisted image will be removed immediately.',
+        cancel: 'Cancel',
+        confirm: 'Remove image',
+    },
+};

@@ -1,0 +1,54 @@
+{
+    "name": "@wellington043/image-loader",
+    "version": "0.1.0",
+    "description": "Framework-free, accessible image gallery and upload preparation for modern browser forms.",
+    "license": "MIT",
+    "author": "Wellington (https://github.com/wellington043)",
+    "homepage": "https://github.com/wellington043/image-loader#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/wellington043/image-loader.git"
+    },
+    "bugs": {
+        "url": "https://github.com/wellington043/image-loader/issues"
+    },
+    "keywords": [
+        "image-upload",
+        "image-gallery",
+        "image-preview",
+        "drag-and-drop",
+        "webp",
+        "accessible"
+    ],
+    "type": "module",
+    "module": "./dist/image-loader.js",
+    "style": "./dist/image-loader.css",
+    "unpkg": "./dist/image-loader.global.js",
+    "jsdelivr": "./dist/image-loader.global.js",
+    "engines": {
+        "node": ">=20.19.0"
+    },
+    "packageManager": "npm@11.11.1",
+    "sideEffects": ["./dist/image-loader.css"],
+    "files": ["dist", "README.md", "LICENSE", "CHANGELOG.md"],
+    "exports": {
+        ".": { "import": "./dist/image-loader.js" },
+        "./global": "./dist/image-loader.global.js",
+        "./styles.css": "./dist/image-loader.css"
+    },
+    "scripts": {
+        "test": "node --test tests/**/*.test.mjs",
+        "test:browser": "playwright test",
+        "build": "vite build",
+        "prepare": "npm run build",
+        "prepublishOnly": "npm test && npm run test:browser"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.62.1",
+        "happy-dom": "^20.0.0",
+        "vite": "^8.2.1"
+    }
+}
